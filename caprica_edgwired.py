@@ -19,7 +19,7 @@ class Line:
 
 # Open the archives.
 # Eventually this will search your disk for the log files.
-file = open("Edgwired_messages_hail_mary.txt")
+file = open("../edgwired_clean.csv")
 
 
 # Put each utterance into an object so we can easily separate the author from what
