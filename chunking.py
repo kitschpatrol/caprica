@@ -34,24 +34,33 @@ class Line:
         self.words = l
         self.lookup = list()        
 
-    def expand_words(self):
-        ## tokenize the list of words
-        templookup = self.words.split(" ")
-
-        for word in templookup:
-            ## for each word in the split list, create a new list which holds the synonyms
-            sense_list = wordnet.syssets(word)
-            if sense_list:
-                i = 0
-                templist = list()
-                for sense in sense_list:
-                    templist.extend(sense_list[i].lemma_names)
-                    i+=1
-                ## append the synonyms to the lookup list of words for the sentence
-                self.lookup.append(templist)
-            else:
-                ## if there are no synonyms, append the word used as the search term
-                self.lookup.append([word])
+def expand_words(words):
+	## tokenize the list of words
+	templookup = words.split(" ")
+	
+	lookup = list()
+	
+	for word in templookup:
+	    ## for each word in the split list, create a new list which holds the synonyms
+	    sense_list = wordnet.syssets(word)
+	    
+		if sense_list:
+	        i = 0
+	        templist = list()
+	        for sense in sense_list:
+	            templist.extend(sense_list[i].lemma_names)
+	            i+=1
+	        ## append the synonyms to the lookup list of words for the sentence
+	        lookup.append(templist)
+	    else:
+	        ## if there are no synonyms, append the word used as the search term
+	        lookup.append([word])
+		
+	return lookup
+	
+	
+	
+	
 
 
 ## READ IN AND STORE THE IM TEXT
