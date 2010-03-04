@@ -129,14 +129,16 @@ def rank(current_speaker, query, possibilities):
 
     bigram_list = list()
     
-    for message in possibilities.words:
-        print message
-        #bigram_list.append(BigramCollocationFinder.from_words(message.words))
+    for message in possibilities:
+        bigram_list.append(BigramCollocationFinder.from_words(message.words))
 
-    print bigram_list
+    for bigram in bigram_list:
+        print bigram.nbest(bigram_measures.likelihood_ratio,10)
 
-        
-        
+##    sorted(bigram_list
+##
+##           bigram_finder.nbest(bigram_measures.raw_freq,10))
+
 ##bigram_finder = BigramCollocationFinder.from_words(allwords_tokens)
 ##bigram_scored = bigram_finder.score_ngrams(bigram_measures.raw_freq)
 ##
@@ -160,6 +162,9 @@ prime_query.lookup = expand_words(prime_query.words)
 
 query = prime_query
 possibilities = search(prime_query,edgwired)   #returns a list of line objects that have matched words or synonyms
+
+
+print len(possibilities)
 rank("Obrigado",i_say,possibilities)
 
 
