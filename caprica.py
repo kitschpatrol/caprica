@@ -18,8 +18,8 @@ class Line:
 
 # Open the archives.
 # Eventually this will search your disk for the log files.
-file = open("aim.txt")
-log = file.readlines(10000000)
+file = open("../obrigado_aim_clean.txt")
+log = file.readlines(10000)
 
 # Put each utterance into an object so we can easily separate the author from what
 # he or she said.
