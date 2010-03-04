@@ -31,11 +31,14 @@ trigram_measures = nltk.collocations.TrigramAssocMeasures()
 ## CREATE A CLASS TO HOLD THE IM DATA
 class Line:
 	## class holds the chat data, lookup is a list of synonyms	 
-	def __init__(self,i,a,l):
+	def __init__(self,i,a,l,d):
 		self.id = i
 		self.author = a
 		self.words = l
-		self.lookup = list()		
+		self.lookup = list()
+		self.index = d
+		self.ngrams = list()
+		self.score = 0
 
 def expand_words(words):
 	## tokenize the list of words
@@ -65,7 +68,7 @@ def expand_words(words):
 file = open("edgwired_clean_chunked.txt")
 rawEdg = file.readlines()
 
-file = open("../obrigado_aim_clean.txt")
+file = open("../obrigado_clean_chunked.txt")
 rawMika = file.readlines()
 
 ##file = open("allwords.txt")
@@ -79,6 +82,7 @@ obrigado = list()
 ## PARSE THE DATA
 def masticator(rawlog):
 	digestedlist = list()
+	index = 0
 	for row in rawlog:
 		## remove the \n
 		row = row.strip()
@@ -91,7 +95,8 @@ def masticator(rawlog):
 		author = parseString[2]
 		words = parseString[3]
 
-		digestedlist.append(Line(conversation_id,author,words))
+		digestedlist.append(Line(conversation_id,author,words, index))
+		index += 1
 
 	return digestedlist
 
@@ -152,12 +157,12 @@ def rank(current_speaker, query, possibilities):
 
 
 edgwired = masticator(rawEdg)
-## obrigado = masticator(rawMika)
+#obrigado = masticator(rawMika)
 
 i_say = "why"
-i_say = sys.argv[1]
+#i_say = sys.argv[1]
 my_name = "obrigado"
-prime_query = Line(0,my_name,i_say)
+prime_query = Line(0,my_name,i_say,0)
 prime_query.lookup = expand_words(prime_query.words)
 
 query = prime_query
