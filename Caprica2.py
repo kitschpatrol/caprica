@@ -5,7 +5,7 @@
 ## Suggested Improvements:
 
 ##synonym/ DONE
-##n-gram/  DONE
+##n-gram/	 DONE
 ##question+response
 ##flagged
 ##original word/
@@ -38,13 +38,19 @@ class Line:
 		self.lookup = list()
 		self.index = d
 		self.ngrams = list()
-		self.score = 0
+		self.synonymScore = 0
+		self.used = 0
+
+def lowerStrings(word_list):
+	return [x.lower() for x in word_list]
+
 
 def expand_words(words):
 	## tokenize the list of words
 	templookup = words.split(" ")
 	
 	lookup = list()
+	uniqueLookup = list()
 	
 	for word in templookup:
 		## for each word in the split list, create a new list which holds the synonyms
@@ -54,15 +60,25 @@ def expand_words(words):
 			i = 0
 			templist = list()
 			for sense in sense_list:
-				templist.extend(sense_list[i].lemma_names)
+				# force lowercase
+				templist.extend(lowerStrings(sense_list[i].lemma_names))
 				i+=1
 			## append the synonyms to the lookup list of words for the sentence
 			lookup.append(templist)
 		else:
 			## if there are no synonyms, append the word used as the search term
 			lookup.append([word])
-		
-	return lookup
+	
+	# remove duplicates
+	for synonyms in lookup: 
+		uniqueLookup.append([x for x in synonyms if x not in locals()['_[1]']])
+	
+	return uniqueLookup
+
+
+
+
+
 
 ## READ IN AND STORE THE IM TEXT
 file = open("edgwired_clean_chunked.txt")
@@ -103,46 +119,81 @@ def masticator(rawlog):
 
 ## SEARCH THE DATA
 def search(query, bank):
-        hits = list()
-        uniqueHits = list()
+				hits = list()
+				print query.lookup
+				synonymLimit = 3 # max number of synonyms to consider
 
-        #Find the matches between synonyms
-        for message in bank:
-            for synlists in query.lookup:
-                for synonym in synlists:
-                    if synonym in message.words:
-                        hits.append(message)
+				#Find the matches between synonyms
+				for line in bank:
+						for synonyms in query.lookup:
+								for synonym in synonyms[0:synonymLimit]:
+										if synonym in line.words:
+												# found a match, bump the score
+												line.synonymScore += 1
+												
+												# bonus score if it's the original word
+												if synonyms[0] == synonym:
+													line.synonymScore += 2
+												
+												# add it to the hit list if we need to
+												# this means we don't need to find unique later
+												if line not in hits:
+													hits.append(line)
+													
+						# if line.synonymScore > 0:
+						# 	print line.synonymScore
+						# 	# print line.words
+							
+				print len(hits)
+				print "done"
+				return hits
 
-        hitMax = len(hits)
-##        print hitMax
+def synonym_search(query, log):
+	hits = list()
+	best_score = 0
+	best_index = 0
+	
+	for line in log:
+		for synonyms in query.lookup:
+			for word in synonyms[0:4]:
+				if word in line.words:
+					line.synonymScore += 1
 
-        #Find the unique hits
-        for i in range(1,hitMax):
-            if hits[i-1].id != hits[i].id:
-                uniqueHits.append(hits[i])
+		if line.synonymScore > best_score:
+			best_score = line.synonymScore
 
-##        print len(uniqueHits
-##        for i in range(10):
-##            print uniqueHits[i].words
+	print best_score
+	
+	# now we have the best score
+	for line in log:
+		for synonyms in query.lookup:
+			for word in synonyms[0:4]:
+				if word in line.words:
+					line.synonymScore += 1
 
-        return uniqueHits
-            
+		if line.synonymScore =- best_score:
+			hits.append(line)
+	
+	
+	
+	print hits
+						
 
 
 ##RANK THE MATCHES
 def rank(current_speaker, query, possibilities):
 
-    bigram_list = list()
-    
-    for message in possibilities:
-        bigram_list.append(BigramCollocationFinder.from_words(message.words))
+		bigram_list = list()
+		
+		for message in possibilities:
+				bigram_list.append(BigramCollocationFinder.from_words(message.words))
 
-    for bigram in bigram_list:
-        print bigram.nbest(bigram_measures.likelihood_ratio,10)
+		for bigram in bigram_list:
+				print bigram.nbest(bigram_measures.likelihood_ratio,10)
 
-##    sorted(bigram_list
+##		sorted(bigram_list
 ##
-##           bigram_finder.nbest(bigram_measures.raw_freq,10))
+##					 bigram_finder.nbest(bigram_measures.raw_freq,10))
 
 ##bigram_finder = BigramCollocationFinder.from_words(allwords_tokens)
 ##bigram_scored = bigram_finder.score_ngrams(bigram_measures.raw_freq)
@@ -153,30 +204,32 @@ def rank(current_speaker, query, possibilities):
 ## SORT: sorted(bigram_finder.nbest(bigram_measures.raw_freq,10)
 ## FILTER BY FREQUENCY: bigram_finder.apply_freq_filter(5)
 ## FIND LENGTH: len(bigram_finder.score_ngrams(bigram_measures.raw_freq))
-            
+						
+
+
 
 
 edgwired = masticator(rawEdg)
 #obrigado = masticator(rawMika)
 
-i_say = "why"
+i_say = "that is strange"
 #i_say = sys.argv[1]
 my_name = "obrigado"
 prime_query = Line(0,my_name,i_say,0)
 prime_query.lookup = expand_words(prime_query.words)
 
 query = prime_query
-possibilities = search(prime_query,edgwired)   #returns a list of line objects that have matched words or synonyms
+possibilities = synonym_search(prime_query,edgwired)	 #returns a list of line objects that have matched words or synonyms
 
 
-print len(possibilities)
-rank("Obrigado",i_say,possibilities)
+#print len(possibilities)
+#rank("Obrigado",i_say,possibilities)
 
 
 if "obrigado" in my_name:
-    my_name = "edgwired"
+		my_name = "edgwired"
 else:
-    my_name = "obrigado"
+		my_name = "obrigado"
 
 
 
