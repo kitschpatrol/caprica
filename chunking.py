@@ -57,11 +57,6 @@ def expand_words(words):
 	        lookup.append([word])
 		
 	return lookup
-	
-	
-	
-	
-
 
 ## READ IN AND STORE THE IM TEXT
 file = open("edgwired_clean.txt")
@@ -77,6 +72,8 @@ rawMika = file.readlines()
 edgwired = list()
 obrigado = list()
 
+
+## PARSE THE DATA
 def masticator(rawlog):
     digestedlist = list()
     for row in rawlog:
@@ -95,11 +92,33 @@ def masticator(rawlog):
 
     return digestedlist
 
-edgwired = masticator(rawEdg)
-obrigado = masticator(rawMika)
 
-print edgwired[0]
-print obrigado[0]
+## SEARCH THE DATA
+	def search(query, bank):
+		hits = list()
+
+		for i in range(len(bank)):	
+			for j in range(len(query.lookup)):
+				if query.lookup[j] in bank[i].words:
+					hits.append(bank[i])
+
+		print len(hits)
+
+
+
+edgwired = masticator(rawEdg)
+## obrigado = masticator(rawMika)
+
+my_name = "obrigado"
+i_say = sys.argv[1]
+prime_query = Line(0,my_name,i_say)
+prime_query.lookup = expand_words(prime_query.words)
+
+search(prime_query,edgwired)
+				
+		
+
+
 
 #### CREATE BIGRAMS AND TRIGRAMS
 ##allwords_tokens = nltk.wordpunct_tokenize(allwords)
