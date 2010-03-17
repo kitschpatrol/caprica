@@ -70,7 +70,7 @@ def expand_words(words):
 			lookup.append([word])
 	
 	# remove duplicates
-	for synonyms in lookup: 
+	for synonyms in lookup:
 		uniqueLookup.append([x for x in synonyms if x not in locals()['_[1]']])
 	
 	return uniqueLookup
