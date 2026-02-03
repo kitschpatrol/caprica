@@ -66,10 +66,10 @@ def expand_words(words):
 	return lookup
  
 ## READ IN AND STORE THE IM TEXT
-##file = open("edgwired_clean.txt")
+##file = open("edgwired.txt")
 ##rawEdg = file.readlines()
  
-file = open("../obrigado_clean_chunked.txt")
+file = open("../obrigado.txt")
 rawMika = file.readlines()
  
 ##file = open("allwords.txt")

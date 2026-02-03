@@ -2,7 +2,7 @@
 import sys
 
 source_text = sys.argv[1]
-#source_text = "../obrigado_clean.txt"
+#source_text = "../obrigado.txt"
 
 file = open(source_text)
 log = file.readlines()
