@@ -66,11 +66,11 @@ def expand_words(words):
 	return lookup
  
 ## READ IN AND STORE THE IM TEXT
-file = open("edgwired_clean.txt")
-rawEdg = file.readlines()
+##file = open("edgwired_clean.txt")
+##rawEdg = file.readlines()
  
-##file = open("../obrigado_clean_chunked.txt")
-##rawMika = file.readlines()
+file = open("../obrigado_clean_chunked.txt")
+rawMika = file.readlines()
  
 ##file = open("allwords.txt")
 ##allwords = file.read()
@@ -123,7 +123,7 @@ def search(query, bank):
                 uniqueHits.append(hits[i])
 
 
-#        print uniqueHits[0].synonymscore
+        print uniqueHits[0].synonymscore
         return uniqueHits
             
  
@@ -182,12 +182,12 @@ def rank_ngrams(current_speaker, query, possibilities):
             
  
  
-edgwired = masticator(rawEdg)
-#obrigado = masticator(rawMika)
+#edgwired = masticator(rawEdg)
+obrigado = masticator(rawMika)
  
 i_say = "just leave me alone girl"
 #i_say = sys.argv[1]
-my_name = "obrigado"
+my_name = "edgewired"
 prime_query = Line(0,my_name,i_say,0)
 prime_query.lookup = expand_words(prime_query.words)
  

@@ -3,9 +3,43 @@ import nltk
 import re
 from nltk.corpus import wordnet
 import random
+import string
  
 chat = list()
 # http://tartarus.org/~martin/PorterStemmer/
+def lowerStrings(word_list):
+	return [x.lower() for x in word_list]
+	
+def expand_words(words):
+	## tokenize the list of words
+	templookup = words.split(" ")
+	uniqueLookup = list() 
+ 
+	lookup = list()
+ 
+	for word in templookup:
+		## for each word in the split list, create a new list which holds the synonyms
+		sense_list = wordnet.synsets(word)
+ 
+		if sense_list:
+			i = 0
+			templist = list()
+			for sense in sense_list:
+				templist.extend(lowerStrings(sense_list[i].lemma_names))
+				i+=1
+			## append the synonyms to the lookup list of words for the sentence
+			lookup.append(templist)
+		else:
+			## if there are no synonyms, append the word used as the search term
+			lookup.append([word])
+
+	# remove duplicates
+	for synonyms in lookup:
+		uniqueLookup = synonyms
+		#uniqueLookup.append([x for x in synonyms if x not in locals()[1]])
+
+	return uniqueLookup
+
  
 class Line:
 	def __init__(self, i, a, l):
@@ -15,20 +49,7 @@ class Line:
 		self.lookup = list()
  
 	def expand_words(self):
-		templookup = self.words.split(" ")
- 
-		for word in templookup:
-			sense_list = wordnet.synsets(word)
-			if sense_list:
-				i = 0
-				templist = list()
-				for sense in sense_list:
-					templist.extend(sense_list[i].lemma_names)
- 
-					i += 1
-				self.lookup.append(templist)
-			else:
-				self.lookup.append([word])
+		self.lookup = expand_words(self.words)
  
 # query_line = Line(1,"eric","meaning of life")
 # query_line.expand_words()
@@ -41,7 +62,7 @@ class Line:
 #query_line = Line(1, "michael","i am not in love with this corpus")
  
  
-file = open("edgwired_clean_chunked.txt")
+file = open("obrigado_clean_chunked.txt")
 text = file.readlines()
  
  
@@ -71,9 +92,11 @@ def ask_something(you_ask):
 	best_fit = 0
 	best_index = 0
  
+	#print query_line.lookup
+
 	for chat_line in chat:
  
-		if "Edgwired" not in chat_line.author:
+		if "obrigado" not in chat_line.author:
  
 			fit = 0
  
@@ -103,8 +126,9 @@ def ask_something(you_ask):
 	# also need to factor chat boundaries
 	for chat_line in chat[best_index:len(chat)]:
  
-		print chat_line.author + ": " + chat_line.words		
-		if "Edgwired" in chat_line.author:
+		#print chat_line.author + ": " + chat_line.words		
+		if "obrigado" in chat_line.author:
+			return chat_line.author + ": " + chat_line.words
 			break
  
  

@@ -72,7 +72,9 @@ def expand_words(words):
 
 	# remove duplicates
 	for synonyms in lookup: 
-		uniqueLookup.append([x for x in synonyms if x not in locals()['_[1]']])
+		for synonym in synonyms:
+			if synonym not in uniqueLookup:
+				uniqueLookup.append(synonyms)
 
 	return uniqueLookup
  
@@ -268,24 +270,35 @@ def chooseLog(asker_name):
  
 
 # Main loop
-asker = "eric"
-query = "pics"
-while 1 == 1:
-	response = get_response(query, chooseLog(asker))
+# Automatic mode
+# asker = "eric"
+# query = "pics"
+# while 1 == 1:
+#     response = get_response(query, chooseLog(asker))
+# 
+#     # print some conversation
+#     #print response.synonymscore
+#     print response.author + ": " + response.words
+#     
+#     # flip the asker
+#     if asker == "eric":
+#         asker = "michael"
+#     else:
+#         asker = "eric"
+#     
+#     # load the query
+#     query = response.words    
 
-	# print some conversation
-	#print response.synonymscore
-	print response.author + ": " + response.words
-	
-	# flip the asker
-	if asker == "eric":
-		asker = "michael"
-	else:
-		asker = "eric"
-	
-	# load the query
-	query = response.words	
-
+# interactive mode
+asker = "michael"
+while 1:
+    you_say = raw_input("You say: ")
+ 
+    if you_say == "quit":
+        break
+    else:
+        response = get_response(you_say, chooseLog(asker))
+        print response.author + ": " + response.words
 
 
 
