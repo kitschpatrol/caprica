@@ -52,6 +52,6 @@ coverage.xml
 
 # NLTK data (users should download their own)
 nltk_data/
-/.claude
+.claude/
 /data/edgwired.txt
 /data/obrigado.txt

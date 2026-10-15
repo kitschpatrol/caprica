@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Copyright (c) 2010 Eric Mika and Michael Edgcumbe. All rights reserved." }
 authors = [{ name = "Eric Mika" }, { name = "Michael Edgcumbe" }]
+classifiers = ["Private :: Do Not Upload"]
 dependencies = ["nltk>=3.8"]
 
 [project.optional-dependencies]
